@@ -2,23 +2,28 @@
 using Navigator;
 using UnityEngine;
 using UnityEngine.UI;
+using Screen = Navigator.Screen;
 
 namespace ExampleScreens
 {
-    public class GreenScreen : BaseScreen
+    public class GreenScreen : Screen
     {
         [SerializeField] private Button _button;
         
-        public override async UniTask Focus()
+        public override UniTask Focus()
         {
             Debug.Log("Green Focus");
            _button.onClick.AddListener(ClickHandler);
+           
+           return UniTask.CompletedTask;
         }
 
-        public override async UniTask Blur()
+        public override UniTask Blur()
         {
             Debug.Log("Green Blur");
             _button.onClick.RemoveListener(ClickHandler);
+            
+            return UniTask.CompletedTask;
         }
 
         private void ClickHandler()

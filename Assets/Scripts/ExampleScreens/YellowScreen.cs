@@ -3,16 +3,16 @@ using Navigator;
 
 namespace ExampleScreens
 {
-    public class YellowScreen : BaseScreen
+    public class YellowScreen : Screen
     {
-        public override async UniTask Focus()
+        public override UniTask Focus()
         {
-            
+            return UniTask.CompletedTask;
         }
 
-        public override async UniTask Blur()
+        public override UniTask Blur()
         {
-            
+            return UniTask.CompletedTask;
         }
     }
 }

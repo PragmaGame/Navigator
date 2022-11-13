@@ -6,8 +6,8 @@ namespace Navigator
     [CreateAssetMenu(fileName = nameof(NavigatorConfig), menuName = "Game/Configs/" + nameof(NavigatorConfig))]
     public partial class NavigatorConfig : ScriptableObject
     {
-        [SerializeField] private List<BaseScreen> screens;
+        [SerializeField] private List<Screen> screens;
 
-        public List<BaseScreen> Screens => screens;
+        public List<Screen> Screens => screens;
     }
 }

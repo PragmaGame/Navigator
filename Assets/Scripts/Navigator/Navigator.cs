@@ -10,17 +10,17 @@ namespace Navigator
 {
     public partial class Navigator : MonoBehaviour
     {
-        private readonly List<BaseScreen> _screenInstances = new List<BaseScreen>();
+        private readonly List<Screen> _screenInstances = new List<Screen>();
         private readonly Stack<StackItem> _stack = new Stack<StackItem>();
         
-        private readonly Queue<BaseScreen> _nextScreens = new Queue<BaseScreen>();
+        private readonly Queue<Screen> _nextScreens = new Queue<Screen>();
 
         [SerializeField] private NavigatorConfig config;
 
         private DiContainer _diContainer;
 
         private StackItem Current => _stack.Count > 0 ? _stack.Peek() : null;
-        private List<BaseScreen> Screens => config.Screens;
+        private List<Screen> Screens => config.Screens;
         private int Count => _stack.Count;
 
         public string CurrentScreenName => Current.screen.name;
@@ -43,38 +43,41 @@ namespace Navigator
             _screenInstances.ForEach(i => i.gameObject.SetActive(false));
         }
 
-        private T CreateScreen<T>(T prefab) where T : BaseScreen
+        private T CreateScreen<T>(T prefab) where T : Screen
         {
-            var screen = _diContainer.InstantiatePrefabForComponent<BaseScreen>(prefab, transform);
+            var screen = _diContainer.InstantiatePrefabForComponent<Screen>(prefab, transform);
             screen.Navigator = this;
             _screenInstances.Add(screen);
 
             return (T)screen;
         }
 
-        private T GetScreen<T>(T screen = null) where T : BaseScreen
+        private T GetScreen<T>(T screen = null) where T : Screen
         {
-            Debug.Log(typeof(T));
-            
             if (screen != null)
             {
-                if (_screenInstances.Contains(screen))
-                {
-                    return screen;
-                }
-
-                var type = screen.GetType();
-
-                var instance = _screenInstances.Find(s => s.GetType() == type);
-
-                if (instance != null)
-                {
-                    return (T)instance;
-                }
-
-                return CreateScreen(screen);
+                return (T)GetScreenByInstance(screen);
             }
 
+            return GetScreenByType<T>();
+        }
+
+        private Screen GetScreenByInstance(Screen screen)
+        {
+            if (_screenInstances.Contains(screen))
+            {
+                return screen;
+            }
+
+            var type = screen.GetType();
+
+            var instance = _screenInstances.Find(s => s.GetType() == type);
+
+            return instance != null ? instance : CreateScreen(screen);
+        }
+
+        private T GetScreenByType<T>() where T : Screen
+        {
             var screenInstance = _screenInstances.Find(s => s is T);
 
             if (screenInstance == null)
@@ -92,7 +95,7 @@ namespace Navigator
             return (T) screenInstance;
         }
 
-        private void AddScreenToStack(BaseScreen screen)
+        private void AddScreenToStack(Screen screen)
         {
             var key = Guid.NewGuid().ToString();
             var item = new StackItem(key, screen);
@@ -103,14 +106,14 @@ namespace Navigator
             _stack.Push(item);
         }
 
-        public UniTask<T> Open<T>(string screenName, bool isPopup = false) where T : BaseScreen
+        public UniTask<T> Open<T>(string screenName, bool isPopup = false) where T : Screen
         {
             var screen = Screens.Find(s => s.name == screenName);
         
             return Open((T) screen, isPopup);
         }
 
-        public async UniTask<T> Open<T>(T screen = null, bool isPopup = false) where T : BaseScreen
+        public async UniTask<T> Open<T>(T screen = null, bool isPopup = false) where T : Screen
         {
             screen = GetScreen(screen);
 
@@ -125,9 +128,11 @@ namespace Navigator
 
             AddScreenToStack(screen);
 
-            if(prevScreen != null)
+            if (prevScreen != null)
+            {
                 await prevScreen.screen.Blur();
-                
+            }
+
             await screen.Show();
             
             await screen.Focus();
@@ -139,9 +144,9 @@ namespace Navigator
         {
             var stackItem = _stack.Pop();
 
-            await stackItem.screen.Hide();
-            
             await stackItem.screen.Blur();
+            
+            await stackItem.screen.Hide();
 
             if (!stackItem.screen.IsPopup && await TryOpenNextScreen())
             {
@@ -164,7 +169,7 @@ namespace Navigator
             return false;
         }
 
-        public async UniTask<T> Replace<T>(T screen = null) where T : BaseScreen
+        public async UniTask<T> Replace<T>(T screen = null) where T : Screen
         {
             if (Current == null)
             {
@@ -179,11 +184,11 @@ namespace Navigator
 
             var replacedItem = _stack.Pop();
             
-            await replacedItem.screen.Hide();
-            
             await replacedItem.screen.Blur();
+            
+            await replacedItem.screen.Hide();
 
-            screen = GetScreen<T>();
+            screen = GetScreen<T>(screen);
 
             AddScreenToStack(screen);
 
@@ -194,7 +199,7 @@ namespace Navigator
             return (T) screen;
         }
 
-        public UniTask<T> OpenIsNeeded<T>(T screen = null, bool isPopup = false) where T : BaseScreen
+        public UniTask<T> OpenIsNeeded<T>(T screen = null, bool isPopup = false) where T : Screen
         {
             screen = GetScreen(screen);
 
@@ -203,14 +208,14 @@ namespace Navigator
             return screen.IsNeedToOpen() ? Open(screen) : UniTask.FromResult<T>(null);
         }
         
-        public UniTask<T> ReplaceIsNeeded<T>(T screen = null) where T : BaseScreen
+        public UniTask<T> ReplaceIsNeeded<T>(T screen = null) where T : Screen
         {
             screen = GetScreen<T>(screen);
             
             return screen.IsNeedToOpen() ? Replace<T>() : UniTask.FromResult<T>(null);
         }
         
-        public void AddedToNextScreenIsNeeded<T>(T screen = null) where T : BaseScreen
+        public void AddedToNextScreenIsNeeded<T>(T screen = null) where T : Screen
         {
             screen = GetScreen<T>(screen);
 
@@ -220,7 +225,7 @@ namespace Navigator
             }
         }
         
-        public void AddedToNextScreen<T>(T screen = null) where T : BaseScreen
+        public void AddedToNextScreen<T>(T screen = null) where T : Screen
         {
             screen = GetScreen<T>(screen);
             
@@ -233,12 +238,12 @@ namespace Navigator
             _nextScreens.Enqueue(screen);
         }
         
-        public UniTaskCompletionSource<bool> WaitOpenScreen<T>(T screen = null) where T : BaseScreen
+        public UniTaskCompletionSource<bool> WaitOpenScreen<T>(T screen = null) where T : Screen
         {
             return GetScreen(screen).ShowCompletionSource;
         }
         
-        public UniTaskCompletionSource<bool> WaitCloseScreen<T>(T screen = null) where T : BaseScreen
+        public UniTaskCompletionSource<bool> WaitCloseScreen<T>(T screen = null) where T : Screen
         {
             return GetScreen(screen).HideCompletionSource;
         }

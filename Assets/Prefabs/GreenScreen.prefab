@@ -144,9 +144,68 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lazyLoad: 0
-  showAnimationDuration: 4
-  hideAnimationDuration: 4
+  _screenAnimations:
+  - rid: 2311314490397556737
   _button: {fileID: 5263480205451416896}
+  references:
+    version: 2
+    RefIds:
+    - rid: 2311314490397556737
+      type: {class: FadeAnimation, ns: Navigator.BaseScreenAnimations, asm: Assembly-CSharp}
+      data:
+        _group: {fileID: 6862618997877973506}
+        _showDuration: 0.5
+        _showCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        _showValue: 1
+        _hideDuration: 0.3
+        _hideCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 1
+            outSlope: 1
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        _hideValue: 0
 --- !u!1 &7097520833999567997
 GameObject:
   m_ObjectHideFlags: 0

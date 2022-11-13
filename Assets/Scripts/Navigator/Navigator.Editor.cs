@@ -4,6 +4,8 @@ using ExampleScreens;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+#pragma warning disable CS4014
+
 namespace Navigator
 {
     public partial class Navigator
@@ -12,21 +14,21 @@ namespace Navigator
         public string targetScreen;
 
         [Space, Header("Open Screen Settings")] 
-        public bool isPopup;
+        public bool isPopupTarget;
         
-        private BaseScreen TargetScreen => Screens.Find(s => s.name == targetScreen);
+        private Screen TargetScreen => Screens.Find(s => s.name == targetScreen);
 
         [Button]
         private void Replace() => Replace(TargetScreen);
 
         [Button]
-        private void Open() => Open(TargetScreen, isPopup);
+        private void Open() => Open(TargetScreen, isPopupTarget);
 
         [Button]
         private void CloseScreen() => Close();
 
         [Button]
-        private void OpenIsNeeded() => OpenIsNeeded(TargetScreen, isPopup);
+        private void OpenIsNeeded() => OpenIsNeeded(TargetScreen, isPopupTarget);
 
         [Button]
         private void AddedToNextScreen() => AddedToNextScreen(TargetScreen);
@@ -46,7 +48,7 @@ namespace Navigator
         [Button]
         private void OpenBlue() => Open<BlueScreen>();
 
-        private IEnumerable GetScreens => NavigatorConfig.GetDropdownOptions<BaseScreen>();
+        private IEnumerable GetScreens => NavigatorConfig.GetDropdownOptions<Screen>();
     }
 }
 

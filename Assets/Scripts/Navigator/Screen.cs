@@ -1,36 +1,35 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using UnityEngine;
 
 namespace Navigator
 {
     [RequireComponent(typeof(Canvas), typeof(CanvasGroup), typeof(RectTransform))]
-    public abstract class BaseScreen : MonoBehaviour, IScreen
+    public abstract class Screen : MonoBehaviour, IScreen
     {
         [SerializeField] private bool lazyLoad;
-        
-        [SerializeField] private float showAnimationDuration = 0.3f;
-        [SerializeField] private float hideAnimationDuration = 0.2f;
 
+        [SerializeReference] private IScreenAnimation[] _screenAnimations;
+        
         public UniTaskCompletionSource<bool> ShowCompletionSource { get; private set; }
         public UniTaskCompletionSource<bool> HideCompletionSource { get; private set; }
         
         public bool IsPopup { get; set; }
         public bool LazyLoad => lazyLoad;
 
-        private CanvasGroup _group;
-
         public Navigator Navigator { get; set; }
 
-        protected virtual void Awake()
-        {
-            _group = GetComponent<CanvasGroup>();
-        }
+        private async UniTask DoShowAnimation(CancellationToken cancellationToken = default) =>
+            await UniTask.WhenAll(_screenAnimations.Select(screen => screen.DoShowAnimation(cancellationToken)));
 
-        private async UniTask DoAnimation(float to, float duration)
+        private async UniTask DoHideAnimation(CancellationToken cancellationToken = default) =>
+            await UniTask.WhenAll(_screenAnimations.Select(screen => screen.DoHideAnimation(cancellationToken)));
+
+        private void Awake()
         {
-            await _group.DOFade(to, duration).ToUniTask();
+            ShowCompletionSource = new UniTaskCompletionSource<bool>();
+            HideCompletionSource = new UniTaskCompletionSource<bool>();
         }
 
         public virtual async UniTask Show()
@@ -39,15 +38,13 @@ namespace Navigator
             HideCompletionSource = new UniTaskCompletionSource<bool>();
             
             gameObject.SetActive(true);
-            
-            _group.alpha = 0;
 
-            await DoAnimation(1, showAnimationDuration);
+            await DoShowAnimation();
         }
 
         public virtual async UniTask Hide()
         {
-            await DoAnimation(0, hideAnimationDuration);
+            await DoHideAnimation();
 
             gameObject.SetActive(false);
 

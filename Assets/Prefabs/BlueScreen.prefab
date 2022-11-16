@@ -142,18 +142,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc332ec9ea594f9fbcc960adeace3a37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lazyLoad: 0
-  _screenAnimations:
-  - rid: 2311314490397556736
+  _lazyLoad: 0
+  _screenShowAnimations:
+  - rid: 2311314558181965824
+  _screenHideAnimations:
+  - rid: 2311314558181965825
+  <IsPermissionOverlapOnShow>k__BackingField: 1
+  <IsPermissionOverlapOnHide>k__BackingField: 1
   references:
     version: 2
     RefIds:
-    - rid: 2311314490397556736
+    - rid: 2311314558181965824
       type: {class: FadeAnimation, ns: Navigator.BaseScreenAnimations, asm: Assembly-CSharp}
       data:
         _group: {fileID: 6603109717868469031}
-        _showDuration: 0.5
-        _showCurve:
+        _duration: 1
+        _curve:
           serializedVersion: 2
           m_Curve:
           - serializedVersion: 3
@@ -177,9 +181,13 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-        _showValue: 1
-        _hideDuration: 0.3
-        _hideCurve:
+        _endValue: 1
+    - rid: 2311314558181965825
+      type: {class: FadeAnimation, ns: Navigator.BaseScreenAnimations, asm: Assembly-CSharp}
+      data:
+        _group: {fileID: 6603109717868469031}
+        _duration: 1
+        _curve:
           serializedVersion: 2
           m_Curve:
           - serializedVersion: 3
@@ -203,4 +211,4 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-        _hideValue: 0
+        _endValue: 0

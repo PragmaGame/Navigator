@@ -11,27 +11,13 @@ namespace Navigator.BaseScreenAnimations
     {
         [SerializeField] private CanvasGroup _group;
 
-        [SerializeField] private float _showDuration;
-        [SerializeField] private AnimationCurve _showCurve;
-        [SerializeField] private float _showValue = 1; 
-        
-        [SerializeField] private float _hideDuration;
-        [SerializeField] private AnimationCurve _hideCurve;
-        [SerializeField] private float _hideValue = 0; 
-        
-        public void ResetToDefaultView()
-        {
-            _group.alpha = 1f;
-        }
+        [SerializeField] private float _duration;
+        [SerializeField] private AnimationCurve _curve;
+        [SerializeField] private float _endValue;
 
-        public async UniTask DoShowAnimation(CancellationToken token)
+        public async UniTask DoAnimation(CancellationToken token)
         {
-            await _group.DOFade(_showValue, _showDuration).SetEase(_showCurve).ToUniTask(cancellationToken: token);
-        }
-
-        public async UniTask DoHideAnimation(CancellationToken token)
-        {
-            await _group.DOFade(_hideValue, _hideDuration).SetEase(_hideCurve).ToUniTask(cancellationToken: token);
+            await _group.DOFade(_endValue, _duration).SetEase(_curve).ToUniTask(cancellationToken: token);
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector.Editor.Drawers;
 using UnityEngine;
 using Zenject;
 
@@ -142,58 +140,69 @@ namespace Navigator
 
         public async UniTask Close()
         {
-            var stackItem = _stack.Pop();
-
-            await stackItem.screen.Blur();
-            
-            await stackItem.screen.Hide();
-
-            if (!stackItem.screen.IsPopup && await TryOpenNextScreen())
+            if (!_stack.TryPop(out var item))
             {
                 return;
             }
 
-            if(Current != null)
-                await Current.screen.Focus();
-        }
-        
-        private async UniTask<bool> TryOpenNextScreen()
-        {
-            if (_nextScreens.Count > 0)
-            {
-                await Open(_nextScreens.Dequeue());
+            var currentScreen = item.screen;
+            
+            await currentScreen.Blur();
 
-                return true;
+            if (!currentScreen.IsPopup && _nextScreens.TryDequeue(out var nextScreen))
+            {
+                if (currentScreen.IsPermissionOverlapOnHide && nextScreen.IsPermissionOverlapOnShow)
+                {
+                    await UniTask.WhenAll(currentScreen.Hide(), Open(nextScreen));
+                }
+                else
+                {
+                    await currentScreen.Hide();
+                    await Open(nextScreen);
+                }
+                
+                return;
             }
 
-            return false;
+            await currentScreen.Hide();
+
+            if(Current != null)
+                await Current.screen.Focus();
         }
 
         public async UniTask<T> Replace<T>(T screen = null) where T : Screen
         {
+            screen = GetScreen(screen);
+            
             if (Current == null)
             {
                 return await Open(screen);
             }
-            
-            if (Current?.screen is T)
+
+            if (Current?.screen == screen)
             {
                 await Current.screen.Focus();
                 return (T) Current.screen;
             }
 
             var replacedItem = _stack.Pop();
-            
-            await replacedItem.screen.Blur();
-            
-            await replacedItem.screen.Hide();
 
-            screen = GetScreen<T>(screen);
+            var replacedScreen = replacedItem.screen;
+            
+            await replacedScreen.Blur();
 
             AddScreenToStack(screen);
 
-            await screen.Show();
-
+            if (replacedScreen.IsPermissionOverlapOnHide && screen.IsPermissionOverlapOnShow)
+            {
+                UniTask.WhenAll(replacedScreen.Hide(), screen.Show());
+            }
+            else
+            {
+                await replacedScreen.Hide();
+                await screen.Show();
+            }
+            
             await screen.Focus();
             
             return (T) screen;

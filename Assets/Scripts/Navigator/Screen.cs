@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -8,23 +7,29 @@ namespace Navigator
     [RequireComponent(typeof(Canvas), typeof(CanvasGroup), typeof(RectTransform))]
     public abstract class Screen : MonoBehaviour, IScreen
     {
-        [SerializeField] private bool lazyLoad;
+        [SerializeField] private bool _lazyLoad;
 
-        [SerializeReference] private IScreenAnimation[] _screenAnimations;
+        [SerializeReference] private IScreenAnimation[] _screenShowAnimations;
+        [SerializeReference] private IScreenAnimation[] _screenHideAnimations;
+        
+        [field:SerializeField] public bool IsPermissionOverlapOnShow { get; private set; }
+        [field:SerializeField] public bool IsPermissionOverlapOnHide { get; private set; }
         
         public UniTaskCompletionSource<bool> ShowCompletionSource { get; private set; }
         public UniTaskCompletionSource<bool> HideCompletionSource { get; private set; }
         
         public bool IsPopup { get; set; }
-        public bool LazyLoad => lazyLoad;
+        public bool LazyLoad => _lazyLoad;
 
         public Navigator Navigator { get; set; }
 
         private async UniTask DoShowAnimation(CancellationToken cancellationToken = default) =>
-            await UniTask.WhenAll(_screenAnimations.Select(screen => screen.DoShowAnimation(cancellationToken)));
+            await UniTask.WhenAll(_screenShowAnimations.Select(screen => screen.DoAnimation(cancellationToken)));
+
 
         private async UniTask DoHideAnimation(CancellationToken cancellationToken = default) =>
-            await UniTask.WhenAll(_screenAnimations.Select(screen => screen.DoHideAnimation(cancellationToken)));
+            await UniTask.WhenAll(_screenHideAnimations.Select(screen => screen.DoAnimation(cancellationToken)));
+
 
         private void Awake()
         {

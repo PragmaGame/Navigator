@@ -143,19 +143,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af6898248f3c40848a70d6265bcd5a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lazyLoad: 0
-  _screenAnimations:
-  - rid: 2311314490397556737
+  _lazyLoad: 0
+  _screenShowAnimations:
+  - rid: 2311314558181965827
+  _screenHideAnimations:
+  - rid: 2311314558181965826
+  <IsPermissionOverlapOnShow>k__BackingField: 1
+  <IsPermissionOverlapOnHide>k__BackingField: 1
   _button: {fileID: 5263480205451416896}
   references:
     version: 2
     RefIds:
-    - rid: 2311314490397556737
+    - rid: 2311314558181965826
       type: {class: FadeAnimation, ns: Navigator.BaseScreenAnimations, asm: Assembly-CSharp}
       data:
         _group: {fileID: 6862618997877973506}
-        _showDuration: 0.5
-        _showCurve:
+        _duration: 1
+        _curve:
           serializedVersion: 2
           m_Curve:
           - serializedVersion: 3
@@ -179,9 +183,13 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-        _showValue: 1
-        _hideDuration: 0.3
-        _hideCurve:
+        _endValue: 0
+    - rid: 2311314558181965827
+      type: {class: FadeAnimation, ns: Navigator.BaseScreenAnimations, asm: Assembly-CSharp}
+      data:
+        _group: {fileID: 6862618997877973506}
+        _duration: 1
+        _curve:
           serializedVersion: 2
           m_Curve:
           - serializedVersion: 3
@@ -205,7 +213,7 @@ MonoBehaviour:
           m_PreInfinity: 2
           m_PostInfinity: 2
           m_RotationOrder: 4
-        _hideValue: 0
+        _endValue: 1
 --- !u!1 &7097520833999567997
 GameObject:
   m_ObjectHideFlags: 0

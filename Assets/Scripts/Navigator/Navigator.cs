@@ -8,20 +8,21 @@ namespace Navigator
 {
     public partial class Navigator : MonoBehaviour
     {
-        private readonly List<Screen> _screenInstances = new List<Screen>();
-        private readonly Stack<StackItem> _stack = new Stack<StackItem>();
+        private readonly List<Screen> _screenInstances = new();
+        private readonly Stack<StackItem> _stack = new();
         
-        private readonly Queue<Screen> _nextScreens = new Queue<Screen>();
+        private readonly Queue<Screen> _nextScreens = new();
+        private readonly List<WaitScreenItem> _waitScreen = new();
 
         [SerializeField] private NavigatorConfig config;
 
         private DiContainer _diContainer;
 
-        private StackItem Current => _stack.Count > 0 ? _stack.Peek() : null;
+        private Screen Current => _stack.Count > 0 ? _stack.Peek().screen : null;
         private List<Screen> Screens => config.Screens;
         private int Count => _stack.Count;
 
-        public string CurrentScreenName => Current.screen.name;
+        public string CurrentScreenName => Current.name;
 
         [Inject]
         private void Construct(DiContainer container)
@@ -115,9 +116,9 @@ namespace Navigator
         {
             screen = GetScreen(screen);
 
-            if (Current?.screen == screen)
+            if (Current == screen)
             {
-                return (T)Current.screen;
+                return (T)Current;
             }
 
             screen.IsPopup = isPopup;
@@ -128,17 +129,21 @@ namespace Navigator
 
             if (prevScreen != null)
             {
-                await prevScreen.screen.Blur();
+                await prevScreen.Blur();
             }
 
             await screen.Show();
             
             await screen.Focus();
+            
+            SendWaitScreen(WaitScreenType.Open, screen);
 
             return screen;
         }
 
-        public async UniTask Close()
+        public async UniTask Close() => await Close(true);
+
+        public async UniTask Close(bool isTryOpenNextScreen)
         {
             if (!_stack.TryPop(out var item))
             {
@@ -149,63 +154,35 @@ namespace Navigator
             
             await currentScreen.Blur();
 
-            if (!currentScreen.IsPopup && _nextScreens.TryDequeue(out var nextScreen))
+            if (isTryOpenNextScreen && !currentScreen.IsPopup && _nextScreens.TryDequeue(out var nextScreen))
             {
                 if (currentScreen.IsPermissionOverlapOnHide && nextScreen.IsPermissionOverlapOnShow)
                 {
+                    SendWaitScreen(WaitScreenType.Close, currentScreen);
                     await UniTask.WhenAll(currentScreen.Hide(), Open(nextScreen));
                 }
                 else
                 {
                     await currentScreen.Hide();
+                    SendWaitScreen(WaitScreenType.Close, currentScreen);
                     await Open(nextScreen);
                 }
                 
                 return;
             }
 
+            SendWaitScreen(WaitScreenType.Close, currentScreen);
             await currentScreen.Hide();
 
             if(Current != null)
-                await Current.screen.Focus();
+                await Current.Focus();
         }
 
-        public async UniTask<T> Replace<T>(T screen = null) where T : Screen
+        public async UniTask<T> Replace<T>(T screen = null, bool isPopup = false) where T : Screen
         {
-            screen = GetScreen(screen);
+            await Close(false);
             
-            if (Current == null)
-            {
-                return await Open(screen);
-            }
-
-            if (Current?.screen == screen)
-            {
-                await Current.screen.Focus();
-                return (T) Current.screen;
-            }
-
-            var replacedItem = _stack.Pop();
-
-            var replacedScreen = replacedItem.screen;
-            
-            await replacedScreen.Blur();
-
-            AddScreenToStack(screen);
-
-            if (replacedScreen.IsPermissionOverlapOnHide && screen.IsPermissionOverlapOnShow)
-            {
-                UniTask.WhenAll(replacedScreen.Hide(), screen.Show());
-            }
-            else
-            {
-                await replacedScreen.Hide();
-                await screen.Show();
-            }
-            
-            await screen.Focus();
-            
-            return (T) screen;
+            return await Open(screen, isPopup);
         }
 
         public UniTask<T> OpenIsNeeded<T>(T screen = null, bool isPopup = false) where T : Screen
@@ -246,15 +223,43 @@ namespace Navigator
                 
             _nextScreens.Enqueue(screen);
         }
-        
-        public UniTaskCompletionSource<bool> WaitOpenScreen<T>(T screen = null) where T : Screen
+
+        public void SendWaitScreen<T>(WaitScreenType waitType, T screen = null) where T : Screen
         {
-            return GetScreen(screen).ShowCompletionSource;
+            screen = GetScreen(screen);
+            
+            var waitScreenItem = _waitScreen.Find(item => item.screen == screen && item.type == waitType);
+
+            if (waitScreenItem == null)
+            {
+                return;
+            }
+
+            waitScreenItem.waitCompletionSource.TrySetResult();
+
+            _waitScreen.Remove(waitScreenItem);
         }
-        
-        public UniTaskCompletionSource<bool> WaitCloseScreen<T>(T screen = null) where T : Screen
+
+        public UniTask WaitScreen<T>(T screen = null, WaitScreenType waitType = WaitScreenType.Open) where T : Screen
         {
-            return GetScreen(screen).HideCompletionSource;
+            screen = GetScreen(screen);
+
+            var waitScreenItem = _waitScreen.Find(item => item.screen == screen && item.type == waitType);
+
+            if (waitScreenItem == null)
+            {
+                var source = new UniTaskCompletionSource();
+                
+                _waitScreen.Add(new WaitScreenItem()
+                {
+                    waitCompletionSource = source,
+                    screen = screen,
+                });
+
+                return source.Task;
+            }
+
+            return waitScreenItem.waitCompletionSource.Task;
         }
     }
 }

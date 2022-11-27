@@ -1,19 +1,22 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 
 namespace Navigator
 {
     [RequireComponent(typeof(Canvas), typeof(CanvasGroup), typeof(RectTransform))]
-    public abstract class Screen : MonoBehaviour, IScreen
+    public abstract class Screen : SerializedMonoBehaviour, IScreen
     {
         [SerializeField] private bool _lazyLoad;
 
-        [SerializeReference] private IScreenAnimation[] _screenShowAnimations;
-        [SerializeReference] private IScreenAnimation[] _screenHideAnimations;
-        
-        [field:SerializeField] public bool IsPermissionOverlapOnShow { get; private set; }
-        [field:SerializeField] public bool IsPermissionOverlapOnHide { get; private set; }
+        [OdinSerialize, NonSerialized] private ScreenAnimationConfig _screenShowAnimationConfig;
+        [OdinSerialize, NonSerialized] private ScreenAnimationConfig _screenHideAnimationConfig;
+
+        public bool IsPermissionOverlapOnShow => _screenShowAnimationConfig.IsPermissionOverlap;
+        public bool IsPermissionOverlapOnHide => _screenHideAnimationConfig.IsPermissionOverlap;
         
         public UniTaskCompletionSource<bool> ShowCompletionSource { get; private set; }
         public UniTaskCompletionSource<bool> HideCompletionSource { get; private set; }
@@ -24,11 +27,11 @@ namespace Navigator
         public Navigator Navigator { get; set; }
 
         private async UniTask DoShowAnimation(CancellationToken cancellationToken = default) =>
-            await UniTask.WhenAll(_screenShowAnimations.Select(screen => screen.DoAnimation(cancellationToken)));
+            await UniTask.WhenAll(_screenShowAnimationConfig.Animations.Select(screen => screen.DoAnimation(cancellationToken)));
 
 
         private async UniTask DoHideAnimation(CancellationToken cancellationToken = default) =>
-            await UniTask.WhenAll(_screenHideAnimations.Select(screen => screen.DoAnimation(cancellationToken)));
+            await UniTask.WhenAll(_screenHideAnimationConfig.Animations.Select(screen => screen.DoAnimation(cancellationToken)));
 
 
         private void Awake()

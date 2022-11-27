@@ -39,13 +39,14 @@ namespace Navigator
         [Button]
         private void ReplaceIsNeeded() => ReplaceIsNeeded(TargetScreen);
 
-        [Button]
+        
+        [ButtonGroup("Temporary"),Button]
         private void OpenGreen() => Open<GreenScreen>();
         
-        [Button]
+        [ButtonGroup("Temporary"),Button]
         private void OpenRed() => Open<RedScreen>();
         
-        [Button]
+        [ButtonGroup("Temporary"),Button]
         private void OpenBlue() => Open<BlueScreen>();
 
         private IEnumerable GetScreens => NavigatorConfig.GetDropdownOptions<Screen>();

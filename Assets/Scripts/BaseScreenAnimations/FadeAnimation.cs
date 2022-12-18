@@ -2,9 +2,10 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Navigator;
 using UnityEngine;
 
-namespace Navigator.BaseScreenAnimations
+namespace BaseScreenAnimations
 {
     [Serializable]
     public class FadeAnimation : IScreenAnimation
@@ -15,9 +16,9 @@ namespace Navigator.BaseScreenAnimations
         [SerializeField] private AnimationCurve _curve;
         [SerializeField] private float _endValue;
 
-        public async UniTask DoAnimation(CancellationToken token)
+        public async UniTask<bool> DoAnimation(CancellationToken token)
         {
-            await _group.DOFade(_endValue, _duration).SetEase(_curve).ToUniTask(cancellationToken: token);
+            return await _group.DOFade(_endValue, _duration).SetEase(_curve).ToUniTask(cancellationToken: token).SuppressCancellationThrow();
         }
     }
 }

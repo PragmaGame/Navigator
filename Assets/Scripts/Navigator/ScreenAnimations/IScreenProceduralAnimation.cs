@@ -4,6 +4,6 @@ namespace Navigator
 {
     public interface IScreenProceduralAnimation : IScreenAnimation
     {
-        public RectTransform ScreenTransform { get; set; }
+        public Transform ScreenTransformInject { get; set; }
     }
 }

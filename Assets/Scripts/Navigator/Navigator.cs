@@ -145,6 +145,14 @@ namespace Navigator
 
         public async UniTask Close(bool isTryOpenNextScreen)
         {
+            UniTask HideWithSendWait(Screen screen)
+            {
+                var hideTask = screen.Hide();
+                SendWaitScreen(WaitScreenType.Close, screen);
+
+                return hideTask;
+            }
+            
             if (!_stack.TryPop(out var item))
             {
                 return;
@@ -158,21 +166,18 @@ namespace Navigator
             {
                 if (currentScreen.IsPermissionOverlapOnHide && nextScreen.IsPermissionOverlapOnShow)
                 {
-                    SendWaitScreen(WaitScreenType.Close, currentScreen);
-                    await UniTask.WhenAll(currentScreen.Hide(), Open(nextScreen));
+                    await UniTask.WhenAll(HideWithSendWait(currentScreen), Open(nextScreen));
                 }
                 else
                 {
-                    await currentScreen.Hide();
-                    SendWaitScreen(WaitScreenType.Close, currentScreen);
+                    await HideWithSendWait(currentScreen);
                     await Open(nextScreen);
                 }
                 
                 return;
             }
 
-            SendWaitScreen(WaitScreenType.Close, currentScreen);
-            await currentScreen.Hide();
+            await HideWithSendWait(currentScreen);
 
             if(Current != null)
                 await Current.Focus();

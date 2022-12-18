@@ -10,7 +10,7 @@ namespace ExampleScreens
     {
         [SerializeField] private Button _button;
         
-        public override UniTask Focus()
+        protected override UniTask OnFocus()
         {
             Debug.Log("Red Focus");
             _button.onClick.AddListener(ClickHandler);
@@ -18,7 +18,7 @@ namespace ExampleScreens
             return UniTask.CompletedTask;
         }
 
-        public override UniTask Blur()
+        protected override UniTask OnBlur()
         {
             Debug.Log("Red Blur");
             _button.onClick.RemoveListener(ClickHandler);

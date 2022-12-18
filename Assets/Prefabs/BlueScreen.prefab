@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6517164172556376064}
   - component: {fileID: 6603109717868469031}
   - component: {fileID: 6235940413788434678}
-  - component: {fileID: 4962142701926833136}
+  - component: {fileID: 4647436366948825032}
   m_Layer: 5
   m_Name: BlueScreen
   m_TagString: Untagged
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 55
---- !u!114 &4962142701926833136
+--- !u!114 &4647436366948825032
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -142,73 +142,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc332ec9ea594f9fbcc960adeace3a37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _screenShowAnimationTurntable
+      Entry: 7
+      Data: 0|Navigator.ScreenAnimationTurntable, Assembly-CSharp
+    - Name: _isPermissionOverlap
+      Entry: 5
+      Data: false
+    - Name: _showScreenAnimation
+      Entry: 7
+      Data: 1|Navigator.Simultaneously, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _animations
+      Entry: 7
+      Data: 2|Navigator.IScreenAnimation[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _screenHideAnimationTurntable
+      Entry: 7
+      Data: 3|Navigator.ScreenAnimationTurntable, Assembly-CSharp
+    - Name: _isPermissionOverlap
+      Entry: 5
+      Data: false
+    - Name: _showScreenAnimation
+      Entry: 7
+      Data: 4|Navigator.Simultaneously, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _animations
+      Entry: 7
+      Data: 5|Navigator.IScreenAnimation[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   _lazyLoad: 0
-  _screenShowAnimations:
-  - rid: 2311314558181965824
-  _screenHideAnimations:
-  - rid: 2311314558181965825
-  <IsPermissionOverlapOnShow>k__BackingField: 1
-  <IsPermissionOverlapOnHide>k__BackingField: 1
-  references:
-    version: 2
-    RefIds:
-    - rid: 2311314558181965824
-      type: {class: FadeAnimation, ns: Navigator.BaseScreenAnimations, asm: Assembly-CSharp}
-      data:
-        _group: {fileID: 6603109717868469031}
-        _duration: 1
-        _curve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        _endValue: 1
-    - rid: 2311314558181965825
-      type: {class: FadeAnimation, ns: Navigator.BaseScreenAnimations, asm: Assembly-CSharp}
-      data:
-        _group: {fileID: 6603109717868469031}
-        _duration: 1
-        _curve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        _endValue: 0

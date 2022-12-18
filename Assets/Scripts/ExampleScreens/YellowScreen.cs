@@ -5,12 +5,12 @@ namespace ExampleScreens
 {
     public class YellowScreen : Screen
     {
-        public override UniTask Focus()
+        protected override UniTask OnFocus()
         {
             return UniTask.CompletedTask;
         }
 
-        public override UniTask Blur()
+        protected override UniTask OnBlur()
         {
             return UniTask.CompletedTask;
         }

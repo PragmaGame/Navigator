@@ -15,6 +15,9 @@ namespace BaseScreenAnimations
         [SerializeField] private float _duration;
         [SerializeField] private AnimationCurve _curve;
         [SerializeField] private float _endValue;
+        
+        [field:SerializeField]
+        public string Id { get; }
 
         public async UniTask<bool> DoAnimation(CancellationToken token)
         {

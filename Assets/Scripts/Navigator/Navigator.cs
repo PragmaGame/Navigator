@@ -105,14 +105,14 @@ namespace Navigator
             _stack.Push(item);
         }
 
-        public UniTask<T> Open<T>(string screenName, bool isPopup = false) where T : Screen
+        public UniTask<T> Open<T>(string screenName, bool isPopup = false, ScreenAnimationData screenAnimationData = null) where T : Screen
         {
             var screen = Screens.Find(s => s.name == screenName);
         
-            return Open((T) screen, isPopup);
+            return Open((T) screen, isPopup, screenAnimationData);
         }
 
-        public async UniTask<T> Open<T>(T screen = null, bool isPopup = false) where T : Screen
+        public async UniTask<T> Open<T>(T screen = null, bool isPopup = false, ScreenAnimationData screenAnimationData = null) where T : Screen
         {
             screen = GetScreen(screen);
 
@@ -132,7 +132,7 @@ namespace Navigator
                 await prevScreen.Blur();
             }
 
-            await screen.Show();
+            await screen.Show(screenAnimationData);
             
             await screen.Focus();
             
@@ -141,13 +141,13 @@ namespace Navigator
             return screen;
         }
 
-        public async UniTask Close() => await Close(true);
+        public async UniTask Close(ScreenAnimationData screenAnimationData = null) => await Close(true, screenAnimationData);
 
-        public async UniTask Close(bool isTryOpenNextScreen)
+        public async UniTask Close(bool isTryOpenNextScreen, ScreenAnimationData screenAnimationData = null)
         {
             UniTask HideWithSendWait(Screen screen)
             {
-                var hideTask = screen.Hide();
+                var hideTask = screen.Hide(screenAnimationData);
                 SendWaitScreen(WaitScreenType.Close, screen);
 
                 return hideTask;
@@ -183,11 +183,11 @@ namespace Navigator
                 await Current.Focus();
         }
 
-        public async UniTask<T> Replace<T>(T screen = null, bool isPopup = false) where T : Screen
+        public async UniTask<T> Replace<T>(T screen = null, bool isPopup = false, ScreenAnimationData replaceable = null, ScreenAnimationData replacing = null) where T : Screen
         {
-            await Close(false);
+            await Close(false, replaceable);
             
-            return await Open(screen, isPopup);
+            return await Open(screen, isPopup, replacing);
         }
 
         public UniTask<T> OpenIsNeeded<T>(T screen = null, bool isPopup = false) where T : Screen
@@ -203,7 +203,7 @@ namespace Navigator
         {
             screen = GetScreen<T>(screen);
             
-            return screen.IsNeedToOpen() ? Replace<T>() : UniTask.FromResult<T>(null);
+            return screen.IsNeedToOpen() ? Replace<T>(screen) : UniTask.FromResult<T>(null);
         }
         
         public void AddedToNextScreenIsNeeded<T>(T screen = null) where T : Screen
@@ -229,7 +229,7 @@ namespace Navigator
             _nextScreens.Enqueue(screen);
         }
 
-        public void SendWaitScreen<T>(WaitScreenType waitType, T screen = null) where T : Screen
+        private void SendWaitScreen<T>(WaitScreenType waitType, T screen = null) where T : Screen
         {
             screen = GetScreen(screen);
             

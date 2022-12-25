@@ -38,24 +38,19 @@ namespace Navigator
 
         private async UniTask DoAnimation(
             ScreenAnimationTurntable screenAnimationTurntable, 
-            IScreenProceduralAnimation screenProceduralAnimation = null, 
+            ScreenAnimationData screenAnimationData = null, 
             CancellationToken cancellationToken = default)
         {
-            if (screenProceduralAnimation == null)
-            {
-                await screenAnimationTurntable.PlayAnimations(cancellationToken);
-            }
-            else
-            {
-                screenProceduralAnimation.ScreenTransformInject = gameObject.transform;
-                await screenProceduralAnimation.DoAnimation(cancellationToken);
-            }
+            await screenAnimationTurntable.PlayAnimations(cancellationToken, screenAnimationData);
         }
 
         protected virtual void Awake()
         {
             ShowCompletionSource = new UniTaskCompletionSource<bool>();
             HideCompletionSource = new UniTaskCompletionSource<bool>();
+
+            _screenHideAnimationTurntable.AnimationObject = transform;
+            _screenShowAnimationTurntable.AnimationObject = transform;
             
             CollectHandlers();
         }
@@ -70,7 +65,7 @@ namespace Navigator
             _showCompletedHandlers = GetComponentsInChildren<IShowCompletedHandler>();
         }
 
-        public virtual async UniTask Show(IScreenProceduralAnimation screenAnimation = null)
+        public virtual async UniTask Show(ScreenAnimationData screenAnimationData = null)
         {
             ShowCompletionSource.TrySetResult(true);
             HideCompletionSource = new UniTaskCompletionSource<bool>();
@@ -81,20 +76,20 @@ namespace Navigator
 
             _showHandlers.ForEach(x => x.OnShow());
 
-            await DoAnimation(_screenShowAnimationTurntable, screenAnimation);
+            await DoAnimation(_screenShowAnimationTurntable, screenAnimationData);
 
             await OnShowCompleted();
 
             _showCompletedHandlers.ForEach(x => x.OnShowCompleted());
         }
 
-        public virtual async UniTask Hide(IScreenProceduralAnimation screenAnimation = null)
+        public virtual async UniTask Hide(ScreenAnimationData screenAnimationData = null)
         {
             await OnHide();
 
             _hideHandlers.ForEach(x => x.OnHide());
             
-            await DoAnimation(_screenHideAnimationTurntable, screenAnimation);
+            await DoAnimation(_screenHideAnimationTurntable, screenAnimationData);
 
             await OnHideCompleted();
 

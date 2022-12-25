@@ -5,6 +5,7 @@ namespace Navigator
 {
     public interface IScreenAnimation
     {
+        public string Id { get;}
         public UniTask<bool> DoAnimation(CancellationToken token);
     }
 }

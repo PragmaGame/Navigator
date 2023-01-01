@@ -2,11 +2,11 @@
 using Navigator;
 using UnityEngine;
 using UnityEngine.UI;
-using Screen = Navigator.Screen;
+using Screen = Navigator.Core.Screen;
 
 namespace ExampleScreens
 {
-    public class GreenScreen : Screen
+    public class GreenScreen : Navigator.Core.Screen
     {
         [SerializeField] private Button _button;
         

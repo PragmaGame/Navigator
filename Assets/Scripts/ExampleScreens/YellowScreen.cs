@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Navigator;
+using Navigator.Core;
 
 namespace ExampleScreens
 {

@@ -13,7 +13,8 @@ namespace Navigator.Core
     public sealed class ScreenAnimationTurntable
     {
         [SerializeField] private bool _isPermissionOverlap;
-        [SerializeReference] private IShowScreenAnimation _showScreenAnimation = new Simultaneously();
+        
+        [OdinSerialize] private IShowScreenAnimation _showScreenAnimation = new Simultaneously();
         [OdinSerialize] private IScreenAnimation[] _animations = new IScreenAnimation[0];
         
         public bool IsPermissionOverlap => _isPermissionOverlap;

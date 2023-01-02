@@ -15,8 +15,8 @@ namespace Navigator.Core
     {
         [SerializeField] private bool _lazyLoad;
 
-        [OdinSerialize, NonSerialized] private ScreenAnimationTurntable _screenShowAnimationTurntable = new();
-        [OdinSerialize, NonSerialized] private ScreenAnimationTurntable _screenHideAnimationTurntable = new();
+        [NonSerialized, OdinSerialize] private ScreenAnimationTurntable _screenShowAnimationTurntable = new();
+        [NonSerialized, OdinSerialize] private ScreenAnimationTurntable _screenHideAnimationTurntable = new();
 
         private IBlurHandler[] _blurHandlers;
         private IFocusHandler[] _focusHandlers;
@@ -32,8 +32,7 @@ namespace Navigator.Core
         public UniTaskCompletionSource<bool> HideCompletionSource { get; private set; }
         
         public bool IsPopup { get; set; }
-        public bool LazyLoad => _lazyLoad;
-
+        public bool IsLazyLoad => _lazyLoad;
         public Navigator Navigator { get; set; }
 
         private async UniTask DoAnimation(
@@ -65,33 +64,33 @@ namespace Navigator.Core
             _showCompletedHandlers = GetComponentsInChildren<IShowCompletedHandler>();
         }
 
-        public virtual async UniTask Show(ScreenAnimationBlockData screenAnimationBlockData = null)
+        public virtual async UniTask Show(CancellationToken token = default, ScreenAnimationBlockData screenAnimationBlockData = null)
         {
             ShowCompletionSource.TrySetResult(true);
             HideCompletionSource = new UniTaskCompletionSource<bool>();
             
             gameObject.SetActive(true);
 
-            await OnShow();
+            await OnShow(token);
 
             _showHandlers.ForEach(x => x.OnShow());
 
-            await DoAnimation(_screenShowAnimationTurntable, screenAnimationBlockData);
+            await DoAnimation(_screenShowAnimationTurntable, screenAnimationBlockData, token);
 
-            await OnShowCompleted();
+            await OnShowCompleted(token);
 
             _showCompletedHandlers.ForEach(x => x.OnShowCompleted());
         }
 
-        public virtual async UniTask Hide(ScreenAnimationBlockData screenAnimationBlockData = null)
+        public virtual async UniTask Hide(CancellationToken token = default, ScreenAnimationBlockData screenAnimationBlockData = null)
         {
-            await OnHide();
+            await OnHide(token);
 
             _hideHandlers.ForEach(x => x.OnHide());
             
-            await DoAnimation(_screenHideAnimationTurntable, screenAnimationBlockData);
+            await DoAnimation(_screenHideAnimationTurntable, screenAnimationBlockData, token);
 
-            await OnHideCompleted();
+            await OnHideCompleted(token);
 
             _hideCompletedHandlers.ForEach(x => x.OnHideCompleted());
 
@@ -101,27 +100,27 @@ namespace Navigator.Core
             ShowCompletionSource = new UniTaskCompletionSource<bool>();
         }
         
-        public async UniTask Focus()
+        public async UniTask Focus(CancellationToken token = default)
         {
-            await OnFocus();
+            await OnFocus(token);
 
             _focusHandlers.ForEach(x => x.OnFocus());
         }
 
-        public async UniTask Blur()
+        public async UniTask Blur(CancellationToken token = default)
         {
-            await OnBlur();
+            await OnBlur(token);
 
             _blurHandlers.ForEach(x => x.OnBlur());
         }
 
         public virtual bool IsNeedToOpen() => true;
         
-        protected virtual UniTask OnFocus(){return UniTask.CompletedTask;}
-        protected virtual UniTask OnBlur(){return UniTask.CompletedTask;}
-        protected virtual UniTask OnShow(){return UniTask.CompletedTask;}
-        protected virtual UniTask OnShowCompleted(){return UniTask.CompletedTask;}
-        protected virtual UniTask OnHide(){return UniTask.CompletedTask;}
-        protected virtual UniTask OnHideCompleted(){return UniTask.CompletedTask;}
+        protected virtual UniTask OnFocus(CancellationToken token){return UniTask.CompletedTask;}
+        protected virtual UniTask OnBlur(CancellationToken token){return UniTask.CompletedTask;}
+        protected virtual UniTask OnShow(CancellationToken token){return UniTask.CompletedTask;}
+        protected virtual UniTask OnShowCompleted(CancellationToken token){return UniTask.CompletedTask;}
+        protected virtual UniTask OnHide(CancellationToken token){return UniTask.CompletedTask;}
+        protected virtual UniTask OnHideCompleted(CancellationToken token){return UniTask.CompletedTask;}
     }
 }

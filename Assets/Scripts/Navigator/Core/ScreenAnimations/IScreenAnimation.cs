@@ -7,7 +7,9 @@ namespace Navigator.Core
     public interface IScreenAnimation
     {
         public string Id { get;}
-        public UniTask<bool> DoAnimation(CancellationToken token);
         public Transform ScreenTransformInject { get; set; }
+        public UniTask<bool> DoAnimation(CancellationToken token);
+        public void RewindToFirstFrame();
+        public void RewindToLastFrame();
     }
 }

@@ -1,12 +1,15 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace Navigator.Core
 {
     public interface IScreen
     {
-        public UniTask Show(ScreenAnimationBlockData screenAnimationBlockData = null);
-        public UniTask Hide(ScreenAnimationBlockData screenAnimationBlockData = null);
-        public UniTask Focus();
-        public UniTask Blur();
+        public bool IsLazyLoad { get; }
+        public Navigator Navigator { get; set; }
+        public UniTask Show(CancellationToken token = default, ScreenAnimationBlockData screenAnimationBlockData = null);
+        public UniTask Hide(CancellationToken token = default, ScreenAnimationBlockData screenAnimationBlockData = null);
+        public UniTask Focus(CancellationToken token = default);
+        public UniTask Blur(CancellationToken token = default);
     }
 }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6517164172556376064}
   - component: {fileID: 6603109717868469031}
   - component: {fileID: 6235940413788434678}
-  - component: {fileID: 4647436366948825032}
+  - component: {fileID: 6888319753256388328}
   m_Layer: 5
   m_Name: BlueScreen
   m_TagString: Untagged
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 55
---- !u!114 &4647436366948825032
+--- !u!114 &6888319753256388328
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,7 +145,8 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 7205825c4832e6246bfc619cb156b82a, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -153,21 +154,135 @@ MonoBehaviour:
     SerializationNodes:
     - Name: _screenShowAnimationTurntable
       Entry: 7
-      Data: 0|Navigator.ScreenAnimationTurntable, Assembly-CSharp
+      Data: 0|Navigator.Core.ScreenAnimationTurntable, Assembly-CSharp
     - Name: _isPermissionOverlap
       Entry: 5
       Data: false
     - Name: _showScreenAnimation
       Entry: 7
-      Data: 1|Navigator.Simultaneously, Assembly-CSharp
+      Data: 1|Navigator.Core.Simultaneously, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
     - Name: _animations
       Entry: 7
-      Data: 2|Navigator.IScreenAnimation[], Assembly-CSharp
+      Data: 2|Navigator.Core.IScreenAnimation[], Assembly-CSharp
     - Name: 
       Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 3|Navigator.Template.ScreenAnimations.FadeAnimation, Assembly-CSharp
+    - Name: _group
+      Entry: 6
+      Data: 
+    - Name: _duration
+      Entry: 4
+      Data: 0
+    - Name: _curve
+      Entry: 7
+      Data: 4|UnityEngine.AnimationCurve, UnityEngine.CoreModule
+    - Name: 
+      Entry: 7
+      Data: 5|UnityEngine.Keyframe[], UnityEngine.CoreModule
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Keyframe, UnityEngine.CoreModule
+    - Name: ver
+      Entry: 3
+      Data: 1
+    - Name: m_Time
+      Entry: 4
+      Data: 0
+    - Name: m_Value
+      Entry: 4
+      Data: 0
+    - Name: m_InTangent
+      Entry: 4
+      Data: 1
+    - Name: m_OutTangent
+      Entry: 4
+      Data: 1
+    - Name: m_TangentMode
+      Entry: 3
+      Data: 34
+    - Name: m_WeightedMode
+      Entry: 3
+      Data: 0
+    - Name: m_InWeight
+      Entry: 4
+      Data: 0
+    - Name: m_OutWeight
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: UnityEngine.Keyframe, UnityEngine.CoreModule
+    - Name: ver
+      Entry: 3
+      Data: 1
+    - Name: m_Time
+      Entry: 4
+      Data: 1
+    - Name: m_Value
+      Entry: 4
+      Data: 1
+    - Name: m_InTangent
+      Entry: 4
+      Data: 1
+    - Name: m_OutTangent
+      Entry: 4
+      Data: 1
+    - Name: m_TangentMode
+      Entry: 3
+      Data: 34
+    - Name: m_WeightedMode
+      Entry: 3
+      Data: 0
+    - Name: m_InWeight
+      Entry: 4
+      Data: 0
+    - Name: m_OutWeight
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 3
+      Data: 8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _startValue
+      Entry: 4
+      Data: 0
+    - Name: _endValue
+      Entry: 4
+      Data: 0
+    - Name: <Id>k__BackingField
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 10
       Data: 0
     - Name: 
       Entry: 13
@@ -180,19 +295,19 @@ MonoBehaviour:
       Data: 
     - Name: _screenHideAnimationTurntable
       Entry: 7
-      Data: 3|Navigator.ScreenAnimationTurntable, Assembly-CSharp
+      Data: 6|Navigator.Core.ScreenAnimationTurntable, Assembly-CSharp
     - Name: _isPermissionOverlap
       Entry: 5
       Data: false
     - Name: _showScreenAnimation
       Entry: 7
-      Data: 4|Navigator.Simultaneously, Assembly-CSharp
+      Data: 7|Navigator.Core.Simultaneously, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
     - Name: _animations
       Entry: 7
-      Data: 5|Navigator.IScreenAnimation[], Assembly-CSharp
+      Data: 8|Navigator.Core.IScreenAnimation[], Assembly-CSharp
     - Name: 
       Entry: 12
       Data: 0

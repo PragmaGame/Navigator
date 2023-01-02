@@ -25,7 +25,7 @@ namespace Navigator.Core
 
         public string CurrentScreenName => Current.name;
 
-        private CancellationTokenSource _screenOperationToken;
+        private bool _isScreenOperationInProgress;
 
         [Inject]
         private void Construct(DiContainer container)
@@ -37,7 +37,7 @@ namespace Navigator.Core
         {
             Screens.ForEach(s =>
             {
-                if (s.LazyLoad) return;
+                if (s.IsLazyLoad) return;
 
                 CreateScreen(s);
             });
@@ -107,41 +107,23 @@ namespace Navigator.Core
 
             _stack.Push(item);
         }
-        
-        
 
-        public UniTask<T> Open<T>(string screenName, bool isPopup = false, ScreenAnimationBlockData screenAnimationBlockData = null) where T : Screen
+        public UniTask<T> Open<T>(string screenName, bool isPopup = false, bool isAllowedMultiOperation = false, ScreenAnimationBlockData screenAnimationBlockData = null, CancellationToken token = default) where T : Screen
         {
             var screen = Screens.Find(s => s.name == screenName);
         
-            return Open((T) screen, isPopup, screenAnimationBlockData);
+            return Open((T) screen, isPopup, screenAnimationBlockData, isAllowedMultiOperation, token);
         }
 
-        // public async UniTask<T> Open<T>(T screen = null, bool isPopup = false, bool isAllowedForceInterrupt = false,
-        //     ScreenAnimationBlockData screenAnimationBlockData = null) where T : Screen
-        // {
-        //     if (_screenOperationToken != null)
-        //     {
-        //         if (isAllowedForceInterrupt)
-        //         {
-        //             _screenOperationToken.Cancel();
-        //         }
-        //         else
-        //         {
-        //             return null;
-        //         }
-        //     }
-        //
-        //     _screenOperationToken = new CancellationTokenSource();
-        //     
-        //     await Open(screen, isPopup, screenAnimationBlockData, _screenOperationToken.Token);
-        //     
-        //     _screenOperationToken.Dispose();
-        //     _screenOperationToken = null;
-        // }
-        //
-        public async UniTask<T> Open<T>(T screen = null, bool isPopup = false, ScreenAnimationBlockData screenAnimationBlockData = null, CancellationToken token = default) where T : Screen
+        private async UniTask<T> Open<T>(T screen = null, bool isPopup = false, ScreenAnimationBlockData screenAnimationBlockData = null, bool isAllowedMultiOperation = false, CancellationToken token = default) where T : Screen
         {
+            if (_isScreenOperationInProgress && !isAllowedMultiOperation)
+            {
+                return null;
+            }
+
+            _isScreenOperationInProgress = true;
+            
             screen = GetScreen(screen);
 
             if (Current == screen)
@@ -157,14 +139,16 @@ namespace Navigator.Core
 
             if (prevScreen != null)
             {
-                await prevScreen.Blur();
+                await prevScreen.Blur(token);
             }
+            
+            await screen.Show(token, screenAnimationBlockData : screenAnimationBlockData);
+            
+            await screen.Focus(token);
 
-            await screen.Show(screenAnimationBlockData);
-            
-            await screen.Focus();
-            
             SendWaitScreen(WaitScreenType.Open, screen);
+            
+            _isScreenOperationInProgress = false;
 
             return screen;
         }
@@ -175,11 +159,13 @@ namespace Navigator.Core
         {
             UniTask HideWithSendWait(Screen screen)
             {
-                var hideTask = screen.Hide(screenAnimationBlockData);
+                var hideTask = screen.Hide(screenAnimationBlockData : screenAnimationBlockData);
                 SendWaitScreen(WaitScreenType.Close, screen);
 
                 return hideTask;
             }
+
+            _isScreenOperationInProgress = true;
             
             if (!_stack.TryPop(out var item))
             {
@@ -209,6 +195,8 @@ namespace Navigator.Core
 
             if(Current != null)
                 await Current.Focus();
+            
+            _isScreenOperationInProgress = false;
         }
 
         public async UniTask<T> Replace<T>(T screen = null, bool isPopup = false, ScreenAnimationBlockData replaceable = null, ScreenAnimationBlockData replacing = null) where T : Screen
@@ -293,12 +281,6 @@ namespace Navigator.Core
             }
 
             return waitScreenItem.waitCompletionSource.Task;
-        }
-
-        private void OnDestroy()
-        {
-            _screenOperationToken?.Cancel();
-            _screenOperationToken?.Dispose();
         }
     }
 }

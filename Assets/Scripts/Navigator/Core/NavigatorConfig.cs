@@ -1,13 +1,15 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 
 namespace Navigator.Core
 {
     [CreateAssetMenu(fileName = nameof(NavigatorConfig), menuName = "Game/Configs/" + nameof(NavigatorConfig))]
-    public partial class NavigatorConfig : ScriptableObject
+    public partial class NavigatorConfig : SerializedScriptableObject
     {
-        [SerializeField] private List<Screen> screens;
+        [OdinSerialize] private List<Screen> _screens;
 
-        public List<Screen> Screens => screens;
+        public List<Screen> Screens => _screens;
     }
 }

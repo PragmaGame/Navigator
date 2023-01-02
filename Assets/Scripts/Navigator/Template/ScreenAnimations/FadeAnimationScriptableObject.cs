@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Navigator.Core;
@@ -7,8 +6,8 @@ using UnityEngine;
 
 namespace Navigator.Template.ScreenAnimations
 {
-    [Serializable]
-    public class FadeAnimation : IScreenAnimation
+    [CreateAssetMenu(fileName = nameof(FadeAnimationScriptableObject), menuName = "Navigator/Animations/" + nameof(FadeAnimationScriptableObject))]
+    public class FadeAnimationScriptableObject : ScriptableObject, IScreenAnimation
     {
         [SerializeField] private CanvasGroup _group;
 

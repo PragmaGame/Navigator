@@ -585,3 +585,4 @@ MonoBehaviour:
   config: {fileID: 11400000, guid: 8b5b12bc9f8ae9b4ca6855dad4e664c8, type: 2}
   targetScreen: 
   isPopupTarget: 0
+  isAllowedMultiOperationTarget: 0

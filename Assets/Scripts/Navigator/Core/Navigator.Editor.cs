@@ -15,6 +15,7 @@ namespace Navigator.Core
 
         [Space, Header("Open Screen Settings")] 
         public bool isPopupTarget;
+        public bool isAllowedMultiOperationTarget;
         
         private Screen TargetScreen => Screens.Find(s => s.name == targetScreen);
 
@@ -22,7 +23,7 @@ namespace Navigator.Core
         private void Replace() => Replace(TargetScreen);
 
         [Button]
-        private void Open() => Open(TargetScreen, isPopupTarget);
+        private void Open() => Open(TargetScreen, isPopupTarget, isAllowedMultiOperation:isAllowedMultiOperationTarget);
 
         [Button]
         private void CloseScreen() => Close();
@@ -41,13 +42,13 @@ namespace Navigator.Core
 
         
         [ButtonGroup("Temporary"),Button]
-        private void OpenGreen() => Open<GreenScreen>();
+        private void OpenGreen() => Open<GreenScreen>(isPopup : isPopupTarget, isAllowedMultiOperation: isAllowedMultiOperationTarget);
         
         [ButtonGroup("Temporary"),Button]
-        private void OpenRed() => Open<RedScreen>();
+        private void OpenRed() => Open<RedScreen>(isPopup : isPopupTarget, isAllowedMultiOperation: isAllowedMultiOperationTarget);
         
         [ButtonGroup("Temporary"),Button]
-        private void OpenBlue() => Open<BlueScreen>();
+        private void OpenBlue() => Open<BlueScreen>(isPopup : isPopupTarget, isAllowedMultiOperation: isAllowedMultiOperationTarget);
 
         private IEnumerable GetScreens => NavigatorConfig.GetDropdownOptions<Screen>();
     }

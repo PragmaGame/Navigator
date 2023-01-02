@@ -143,77 +143,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af6898248f3c40848a70d6265bcd5a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 7205825c4832e6246bfc619cb156b82a, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _screenShowAnimationTurntable
+      Entry: 7
+      Data: 0|Navigator.Core.ScreenAnimationTurntable, Assembly-CSharp
+    - Name: _isPermissionOverlap
+      Entry: 5
+      Data: false
+    - Name: _showScreenAnimation
+      Entry: 7
+      Data: 1|Navigator.Core.Simultaneously, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _animations
+      Entry: 7
+      Data: 2|Navigator.Core.IScreenAnimation[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _screenHideAnimationTurntable
+      Entry: 7
+      Data: 3|Navigator.Core.ScreenAnimationTurntable, Assembly-CSharp
+    - Name: _isPermissionOverlap
+      Entry: 5
+      Data: false
+    - Name: _showScreenAnimation
+      Entry: 7
+      Data: 4|Navigator.Core.Simultaneously, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _animations
+      Entry: 7
+      Data: 5|Navigator.Core.IScreenAnimation[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   _lazyLoad: 0
-  _screenShowAnimations:
-  - rid: 2311314558181965827
-  _screenHideAnimations:
-  - rid: 2311314558181965826
-  <IsPermissionOverlapOnShow>k__BackingField: 1
-  <IsPermissionOverlapOnHide>k__BackingField: 1
   _button: {fileID: 5263480205451416896}
-  references:
-    version: 2
-    RefIds:
-    - rid: 2311314558181965826
-      type: {class: FadeAnimation, ns: Navigator.BaseScreenAnimations, asm: Assembly-CSharp}
-      data:
-        _group: {fileID: 6862618997877973506}
-        _duration: 1
-        _curve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        _endValue: 0
-    - rid: 2311314558181965827
-      type: {class: FadeAnimation, ns: Navigator.BaseScreenAnimations, asm: Assembly-CSharp}
-      data:
-        _group: {fileID: 6862618997877973506}
-        _duration: 1
-        _curve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 0
-            value: 0
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 1
-            outSlope: 1
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        _endValue: 1
 --- !u!1 &7097520833999567997
 GameObject:
   m_ObjectHideFlags: 0
